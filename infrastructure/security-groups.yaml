@@ -65,11 +65,11 @@ Resources:
                 Value: !Sub ${EnvironmentName}-Lambda-Functions
 
     # This security group defines who/where is allowed to access the ECS hosts directly.
-    # By default we're just allowing access from the load balancer.  If you want to SSH 
+    # By default we're just allowing access from the load balancer.  If you want to SSH
     # into the hosts, or expose non-load balanced services you can open their ports here.
     ECSHostSecurityGroup:
         Type: AWS::EC2::SecurityGroup
-        Properties: 
+        Properties:
             VpcId: !Ref VPC
             GroupDescription: Access to the ECS hosts and the tasks/containers that run on them
             SecurityGroupIngress:
@@ -81,7 +81,7 @@ Resources:
                   FromPort: 22
                   ToPort: 22
                   IpProtocol: tcp
-            Tags: 
+            Tags:
                 - Key: Name
                   Value: !Sub ${EnvironmentName}-ECS-Hosts
 
@@ -90,20 +90,20 @@ Resources:
     # it further if you want.
     LoadBalancerSecurityGroup:
         Type: AWS::EC2::SecurityGroup
-        Properties: 
+        Properties:
             VpcId: !Ref VPC
             GroupDescription: Access to the load balancer that sits in front of ECS
             SecurityGroupIngress:
                 # Allow access from anywhere to our ECS services
                 - CidrIp: 0.0.0.0/0
                   IpProtocol: -1
-            Tags: 
+            Tags:
                 - Key: Name
                   Value: !Sub ${EnvironmentName}-LoadBalancers
 
 Outputs:
 
-    ECSHostSecurityGroup: 
+    ECSHostSecurityGroup:
         Description: A reference to the security group for ECS hosts
         Value: !GetAtt [ "ECSHostSecurityGroup", "GroupId" ]
 
