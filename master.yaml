@@ -84,7 +84,7 @@ Resources:
     VPC:
         Type: AWS::CloudFormation::Stack
         Properties:
-            TemplateURL: https://s3.amazonaws.com/codepipeline.traceme.com/infrastructure/infrastructure/vpc.yaml
+            TemplateURL: https://s3.amazonaws.com/codepipeline.traceme.com/infrastructure/stacks/vpc.yaml
             Parameters:
                 EnvironmentName:    !Ref AWS::StackName
                 VpcCIDR:            !Sub '10.${VpcClassB}.0.0/16'
@@ -96,7 +96,7 @@ Resources:
     SecurityGroups:
         Type: AWS::CloudFormation::Stack
         Properties:
-            TemplateURL: https://s3.amazonaws.com/codepipeline.traceme.com/infrastructure/infrastructure/security-groups.yaml
+            TemplateURL: https://s3.amazonaws.com/codepipeline.traceme.com/infrastructure/stacks/security-groups.yaml
             Parameters: 
                 EnvironmentName: !Ref AWS::StackName
                 VPC: !GetAtt VPC.Outputs.VPC
@@ -105,7 +105,7 @@ Resources:
     ALB:
         Type: AWS::CloudFormation::Stack
         Properties:
-            TemplateURL: https://s3.amazonaws.com/codepipeline.traceme.com/infrastructure/infrastructure/load-balancers.yaml
+            TemplateURL: https://s3.amazonaws.com/codepipeline.traceme.com/infrastructure/stacks/load-balancers.yaml
             Parameters:
                 EnvironmentName: !Ref AWS::StackName
                 VPC: !GetAtt VPC.Outputs.VPC
@@ -115,7 +115,7 @@ Resources:
     Bastion:
         Type: AWS::CloudFormation::Stack
         Properties:
-            TemplateURL: https://s3.amazonaws.com/codepipeline.traceme.com/infrastructure/infrastructure/bastion.yaml
+            TemplateURL: https://s3.amazonaws.com/codepipeline.traceme.com/infrastructure/stacks/bastion.yaml
             Parameters:
                 EnvironmentName: !Ref AWS::StackName
                 InstanceType: !Ref BastionInstanceType
@@ -127,7 +127,7 @@ Resources:
     ECS:
         Type: AWS::CloudFormation::Stack
         Properties:
-            TemplateURL: https://s3.amazonaws.com/codepipeline.traceme.com/infrastructure/infrastructure/ecs-cluster.yaml
+            TemplateURL: https://s3.amazonaws.com/codepipeline.traceme.com/infrastructure/stacks/ecs-cluster.yaml
             Parameters:
                 EnvironmentName: !Ref AWS::StackName
                 InstanceType: !Ref EcsInstanceType
