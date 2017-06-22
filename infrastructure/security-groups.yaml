@@ -34,6 +34,36 @@ Resources:
               - Key: Name
                 Value: !Sub ${EnvironmentName}-Bastion-Hosts
 
+    DatabaseSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            VpcId: !Ref VPC
+            GroupDescription: Access to the Database
+            SecurityGroupIngress:
+              - SourceSecurityGroupId: !GetAtt [ "LambdaSecurityGroup", "GroupId" ]
+                FromPort: 5432
+                ToPort: 5432
+                IpProtocol: tcp
+              - SourceSecurityGroupId: !GetAtt [ "ECSHostSecurityGroup", "GroupId" ]
+                FromPort: 5432
+                ToPort: 5432
+                IpProtocol: tcp
+            Tags:
+              - Key: Name
+                Value: !Sub ${EnvironmentName}-Database-Hosts
+
+    LambdaSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            VpcId: !Ref VPC
+            GroupDescription: Security Group for Lambda Functions
+            SecurityGroupEgress:
+              - CidrIp: 0.0.0.0/0
+                IpProtocol: -1
+            Tags:
+              - Key: Name
+                Value: !Sub ${EnvironmentName}-Lambda-Functions
+
     # This security group defines who/where is allowed to access the ECS hosts directly.
     # By default we're just allowing access from the load balancer.  If you want to SSH 
     # into the hosts, or expose non-load balanced services you can open their ports here.
@@ -85,3 +115,10 @@ Outputs:
         Description: A reference to the security group for the Bastion
         Value: !GetAtt [ "BastionHostSecurityGroup", "GroupId" ]
 
+    DatabaseSecurityGroup:
+        Description: A reference to the security group for the Database
+        Value: !GetAtt [ "DatabaseSecurityGroup", "GroupId" ]
+
+    LambdaSecurityGroup:
+        Description: A reference to the security group for Lambdas
+        Value: !GetAtt [ "LambdaSecurityGroup", "GroupId" ]
