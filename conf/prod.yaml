@@ -1,0 +1,8 @@
+[
+    { "ParameterKey": "SshKey", "ParameterValue": "production" },
+    { "ParameterKey": "VpcClassB", "ParameterValue": "2" },
+    { "ParameterKey": "EcsInstanceType", "ParameterValue": "t2.medium" },
+    { "ParameterKey": "EcsClusterSize", "ParameterValue": "2" },
+    { "ParameterKey": "WebsiteServiceCount", "ParameterValue": "2" },
+    { "ParameterKey": "ProductServiceCount", "ParameterValue": "2" }
+]
