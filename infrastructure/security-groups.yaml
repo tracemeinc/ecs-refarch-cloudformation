@@ -73,9 +73,11 @@ Resources:
             VpcId: !Ref VPC
             GroupDescription: Access to the ECS hosts and the tasks/containers that run on them
             SecurityGroupIngress:
-                # Only allow inbound access to ECS from the ELB
-                - SourceSecurityGroupId: !GetAtt [ "LoadBalancerSecurityGroup", "GroupId" ] 
-                  IpProtocol: -1
+                # Only allow inbound access to ECS from the ALB
+                - SourceSecurityGroupId: !GetAtt [ "LoadBalancerSecurityGroup", "GroupId" ]
+                  FromPort: 0
+                  ToPort: 65535
+                  IpProtocol: tcp
                 # Allow SSH from the Bastion host
                 - SourceSecurityGroupId: !GetAtt [ "BastionHostSecurityGroup", "GroupId" ]
                   FromPort: 22
