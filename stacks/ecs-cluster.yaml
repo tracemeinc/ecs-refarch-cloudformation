@@ -30,7 +30,7 @@ Parameters:
         Description: Select the Security Group to use for the ECS cluster hosts
         Type: AWS::EC2::SecurityGroup::Id
 
-    SSHKey:
+    SshKey:
         Type: AWS::EC2::KeyPair::KeyName
         Description: SSH Key for to access to the ECS Hosts
 
@@ -100,7 +100,7 @@ Resources:
     ECSLaunchConfiguration:
         Type: AWS::AutoScaling::LaunchConfiguration
         Properties:
-            KeyName: !Ref SSHKey
+            KeyName: !Ref SshKey
             ImageId:  !FindInMap [AWSRegionToAMI, !Ref "AWS::Region", AMI]
             InstanceType: !Ref InstanceType
             SecurityGroups: 
