@@ -12,20 +12,24 @@ Description: >
     https://github.com/awslabs/ecs-refarch-cloudformation
 
 Parameters:
+
     SshKey:
         Type: AWS::EC2::KeyPair::KeyName
         Description: Provide an SSH KeyName to allow SSH access to the instances via a Bastion Host
+
     AllowedIngressCidr:
         Type: String
         Description: Provide a valid CIDR to indicate who can SSH to the Bastion Host, defaults to the current office ip address
         Default: 67.134.193.84/32
         AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+
     VpcClassB:
         Type: Number
         Description: Class B of VPC (10.XXX.0.0/16)
         ConstraintDescription: 'Must be in the range [0-255]'
         MinValue: 0
         MaxValue: 255
+
     BastionInstanceType:
         Description: Which instance type should we use to build each bastion host?
         Default: t2.micro
@@ -33,12 +37,15 @@ Parameters:
     EcsInstanceType:
         Description: Which instance type should we use to build the ECS cluster?
         Type: String
+
     EcsClusterSize:
         Description: How many ECS hosts do you want to initially deploy?
         Type: Number
+
     WebsiteServiceCount:
         Description: How many website tasks should be deployed across the ECS cluster?
         Type: Number
+
     ProductServiceCount:
         Description: How many website tasks should be deployed across the ECS cluster?
         Type: Number
@@ -97,7 +104,7 @@ Resources:
         Type: AWS::CloudFormation::Stack
         Properties:
             TemplateURL: https://s3.amazonaws.com/codepipeline.traceme.com/infrastructure/stacks/security-groups.yaml
-            Parameters: 
+            Parameters:
                 EnvironmentName: !Ref AWS::StackName
                 VPC: !GetAtt VPC.Outputs.VPC
                 BastionCidr: !Ref AllowedIngressCidr
@@ -145,7 +152,7 @@ Resources:
                 VPC: !GetAtt VPC.Outputs.VPC
                 Cluster: !GetAtt ECS.Outputs.Cluster
                 DesiredCount: !Ref ProductServiceCount
-                Listener: !GetAtt ALB.Outputs.Listener 
+                Listener: !GetAtt ALB.Outputs.Listener
                 Path: /products
 
     WebsiteService:
@@ -157,16 +164,16 @@ Resources:
                 Cluster: !GetAtt ECS.Outputs.Cluster
                 DesiredCount: !Ref WebsiteServiceCount
                 ProductServiceUrl: !Join [ "/", [ !GetAtt ALB.Outputs.LoadBalancerUrl, "products" ]]
-                Listener: !GetAtt ALB.Outputs.Listener 
+                Listener: !GetAtt ALB.Outputs.Listener
                 Path: /
 
 
 Outputs:
 
-    ProductServiceUrl: 
+    ProductServiceUrl:
         Description: The URL endpoint for the product service
         Value: !Join [ "/", [ !GetAtt ALB.Outputs.LoadBalancerUrl, "products" ]]
 
-    WebsiteServiceUrl: 
+    WebsiteServiceUrl:
         Description: The URL endpoint for the website service
         Value: !Join ["", [ !GetAtt ALB.Outputs.LoadBalancerUrl, "/" ]]
