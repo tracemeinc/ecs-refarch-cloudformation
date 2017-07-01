@@ -1,12 +1,16 @@
 Description: >
 
-    This template deploys a VPC, with a pair of public and private subnets spread 
-    across two Availabilty Zones. It deploys an Internet Gateway, with a default 
-    route on the public subnets. It deploys a pair of NAT Gateways (one in each AZ), 
+    This template deploys a VPC, with a pair of public and private subnets spread
+    across two Availabilty Zones. It deploys an Internet Gateway, with a default
+    route on the public subnets. It deploys a pair of NAT Gateways (one in each AZ),
     and default routes for them in the private subnets.
 
-    It then deploys a highly available ECS cluster using an AutoScaling Group, with 
-    ECS hosts distributed across multiple Availability Zones. 
+    It then deploys a highly available ECS cluster using an AutoScaling Group, with
+    ECS hosts distributed across multiple Availability Zones.
+
+    Additional a pair of bastion hosts are deployed to allow access to
+    everything on the private subnets which includes the ECS cluster, and the
+    database hosts.
 
     It is based on a reference architecture created by awslabs
     https://github.com/awslabs/ecs-refarch-cloudformation
@@ -34,6 +38,41 @@ Parameters:
         Description: Which instance type should we use to build each bastion host?
         Default: t2.micro
         Type: String
+
+    DatabaseAdminUsername:
+        NoEcho: 'true'
+        Description: The database admin account username
+        Type: String
+        MinLength: '1'
+        MaxLength: '16'
+        AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+        ConstraintDescription: >
+            must begin with a letter and contain only alphanumeric characters and be 16 characters or under.
+
+    DatabaseAdminPassword:
+        NoEcho: 'true'
+        Description: The database admin account password
+        Type: String
+        MinLength: '8'
+
+    DatabaseInstanceType:
+        Description: Which instance type should we use to build each database host?
+        AllowedValues:
+            - db.t2.micro
+            - db.m1.small
+            - db.m1.large
+            - db.m1.xlarge
+            - db.m2.xlarge
+        ConstraintDescription: must select a valid database      instance type.
+        Type: String
+
+    DatabaseStorageSizeGigabytes:
+        Description: The size of the database (Gb)
+        Type: Number
+        MinValue: '5'
+        MaxValue: '6144'
+        ConstraintDescription: must be between 5+
+
     EcsInstanceType:
         Description: Which instance type should we use to build the ECS cluster?
         Type: String
@@ -143,6 +182,19 @@ Resources:
                 SecurityGroup: !GetAtt SecurityGroups.Outputs.ECSHostSecurityGroup
                 Subnets: !GetAtt VPC.Outputs.PrivateSubnets
                 SshKey: !Ref SshKey
+    Database:
+        Type: AWS::CloudFormation::Stack
+        Properties:
+            TemplateURL: !Sub 'https://s3.amazonaws.com/codepipeline.traceme.com/${AWS::StackName}/infrastructure/stacks/database.yaml'
+            Parameters:
+                EnvironmentName: !Ref AWS::StackName
+                DatabaseName: badgerdb
+                AdminUsername: !Ref DatabaseAdminUsername
+                AdminPassword: !Ref DatabaseAdminPassword
+                InstanceType: !Ref DatabaseInstanceType
+                StorageSizeGigabytes: !Ref DatabaseStorageSizeGigabytes
+                Subnets: !GetAtt VPC.Outputs.PrivateSubnets
+                SecurityGroup: !GetAtt SecurityGroups.Outputs.DatabaseSecurityGroup
 
     ProductService:
         Type: AWS::CloudFormation::Stack
