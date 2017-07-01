@@ -4,5 +4,9 @@
     { "ParameterKey": "EcsInstanceType", "ParameterValue": "t2.micro" },
     { "ParameterKey": "EcsClusterSize", "ParameterValue": "2" },
     { "ParameterKey": "WebsiteServiceCount", "ParameterValue": "2" },
-    { "ParameterKey": "ProductServiceCount", "ParameterValue": "2" }
+    { "ParameterKey": "ProductServiceCount", "ParameterValue": "2" },
+    { "ParameterKey": "DatabaseAdminUsername", "ParameterValue": "devintdbroot" },
+    { "ParameterKey": "DatabaseAdminPassword", "ParameterValue": "7E_5u6heQaPum8R+sWut" },
+    { "ParameterKey": "DatabaseInstanceType", "ParameterValue": "db.t2.micro" },
+    { "ParameterKey": "DatabaseStorageSizeGigabytes", "ParameterValue": "30" }
 ]
