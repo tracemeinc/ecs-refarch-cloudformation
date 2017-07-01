@@ -187,6 +187,43 @@ Service:
 
 If you found yourself wishing this set of frequently asked questions had an answer for a particular problem, please [submit a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/). The chances are that others will also benefit from having the answer listed here.
 
+## Using the CLI
+
+I've added configuration files to this repo which correspond to each of our
+environments.  In order to create the stack with the CLI there are a couple of
+work flows.
+
+### make sure everything is in a bucket
+```
+STACK_NAME=ChrisTest3
+TEMPLATE_URL=https://s3-us-west-2.amazonaws.com/codepipeline.traceme.com/$STACK_NAME/infrastructure/master.yaml
+aws s3 sync . s3://codepipeline.traceme.com/$STACK_NAME/infrastructure --exclude ".git/*" --exclude "*.swp"
+PARAMS=`aws s3 cp s3://codepipeline.traceme.com/$STACK_NAME/infrastructure/conf/devint.yaml -`
+```
+
+### use change sets to deploy change (recommended)
+```
+CHANGE_SET_NAME=my-change
+aws cloudformation create-change-set --stack-name $STACK_NAME --change-set-name $CHANGE_SET_NAME --template-url $TEMPLATE_URL --parameters "$PARAMS"
+```
+
+#### go verify the change set in [cloudformation console](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=changesets)
+
+#### apply change-set
+```
+aws cloudformation execute-change-set --stack-name $STACK_NAME --change-set-name $CHANGE_SET_NAME
+```
+
+### Update a Stack Immediately (not recommended for prod)
+use ```create-stack``` or
+```update-date``` pointing both to the template file in s3 and the parameters file
+for the environment.
+
+```
+aws cloudformation update-stack --stack-name $STACK_NAME --template-url $TEMPLATE_URL --parameters "PARAMS"
+```
+
+
 ## Contributing
 
 Please [create a new GitHub issue](https://github.com/awslabs/ecs-refarch-cloudformation/issues/new) for any feature requests, bugs, or documentation improvements. 
