@@ -48,6 +48,10 @@ Resources:
                 FromPort: 5432
                 ToPort: 5432
                 IpProtocol: tcp
+              - SourceSecurityGroupId: !GetAtt [ "BastionHostSecurityGroup", "GroupId" ]
+                FromPort: 5432
+                ToPort: 5432
+                IpProtocol: tcp
             Tags:
               - Key: Name
                 Value: !Sub ${EnvironmentName}-Database-Hosts
