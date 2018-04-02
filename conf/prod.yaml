@@ -6,8 +6,7 @@
     { "ParameterKey": "WebsiteServiceCount", "ParameterValue": "2" },
     { "ParameterKey": "ProductServiceCount", "ParameterValue": "2" },
     { "ParameterKey": "DatabaseAdminUsername", "ParameterValue": "tracemeprodroot" },
-    { "ParameterKey": "DatabaseAdminPassword", "ParameterValue": "d4da6Uf@drUHucEbRuspe7$uVad7XA
-      " },
+    { "ParameterKey": "DatabaseAdminPassword", "ParameterValue": "d4da6Uf@drUHucEbRuspe7$uVad7XA" },
     { "ParameterKey": "DatabaseInstanceType", "ParameterValue": "db.m4.2xlarge" },
     { "ParameterKey": "DatabaseStorageSizeGigabytes", "ParameterValue": "100" }
 
