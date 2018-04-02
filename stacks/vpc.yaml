@@ -41,6 +41,9 @@ Resources:
         Type: AWS::EC2::VPC
         Properties:
             CidrBlock: !Ref VpcCIDR
+            EnableDnsSupport: True
+            # live video servers are expecting to have public dns assigned on spin up
+            EnableDnsHostnames: True
             Tags: 
                 - Key: Name 
                   Value: !Ref EnvironmentName
