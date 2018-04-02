@@ -1,0 +1,129 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+    This template contains the security groups required for secondary data
+    centers.  We create them in a seperate nested template, so they can be
+    referenced by all of the other nested templates.
+
+Parameters:
+
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+
+    VPC:
+        Type: AWS::EC2::VPC::Id
+        Description: Choose which VPC the security groups should be deployed to
+
+    OfficeCidr:
+        Type: String
+        Description: CIDR of office. Used for various access.
+        AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+
+    VpnCidr:
+        Type: String
+        Description: CIDR of VPN. Used for various access.
+        AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+
+Resources:
+    WowzaHostSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            VpcId: !Ref VPC
+            GroupDescription: Access to the Wowza hosts
+            SecurityGroupIngress:
+
+              - IpProtocol: tcp
+                FromPort: 80
+                ToPort: 80
+                CidrIp: 0.0.0.0/0
+                Description: Required open so lets encrypt can verify certificates
+
+              #- IpProtocol: tcp
+              #  FromPort: 8086
+              #  ToPort: 8086
+              #  CidrIp: 0.0.0.0/0
+              #  Description: Wowza Server Statistics
+
+              # we can probably lock this down to our VPN
+              - IpProtocol: tcp
+                FromPort: 8090
+                ToPort: 8090
+                CidrIp: !Ref OfficeCidr
+                Description: Wowza web UI (SSL) from Office
+
+              - IpProtocol: tcp
+                FromPort: 8090
+                ToPort: 8090
+                CidrIp: !Ref VpnCidr
+                Description: Wowza web UI (SSL) over VPN
+
+              #- IpProtocol: tcp
+              #  FromPort: 8088
+              #  ToPort: 8088
+              #  CidrIp: 0.0.0.0/0
+              #  Description: Wowza web UI insecure
+
+              - IpProtocol: tcp
+                FromPort: 443
+                ToPort: 443
+                CidrIp: 0.0.0.0/0
+                Description: HTTP secure streaming port, Accessed from cloudfront
+
+              #- IpProtocol: tcp
+              #  FromPort: 8087
+              #  ToPort: 8087
+              #  CidrIp: !Ref OfficeCidr
+              #  Description: Host Api Access
+
+              #- IpProtocol: tcp
+              #  FromPort: 8084
+              #  ToPort: 8085
+              #  CidrIp: !Ref OfficeCidr
+              #  Description: Java Management Extensions (JMX)
+
+              - IpProtocol: tcp
+                FromPort: 1935
+                ToPort: 1935
+                CidrIp: 0.0.0.0/0
+                Description: RTMP Port
+
+              #- IpProtocol: tcp
+              #  FromPort: 554
+              #  ToPort: 554
+              #  CidrIp: 0.0.0.0/0
+              #  Description: RTSP
+
+              - IpProtocol: tcp
+                FromPort: 22
+                ToPort: 22
+                CidrIp: !Ref OfficeCidr
+                Description: SSH access to host
+
+              - IpProtocol: tcp
+                FromPort: 22
+                ToPort: 22
+                CidrIp: !Ref VpnCidr
+                Description: SSH access to host
+
+              #- IpProtocol: tcp
+              #  FromPort: 8089
+              #  ToPort: 8089
+              #  CidrIp: !Ref OfficeCidr
+              #  Description: Hosted Api Documentation
+
+              #- IpProtocol: udp
+              #  FromPort: 6970
+              #  ToPort: 9999
+              #  CidrIp: 0.0.0.0/0
+              #  Description: RTSP/RTP, native RTP, or MPEG-TS streams
+            SecurityGroupEgress:
+              - IpProtocol: -1
+                CidrIp: 0.0.0.0/0
+            Tags:
+                - Key: Name
+                  Value: !Sub ${EnvironmentName}-Wowza-Hosts
+Outputs:
+
+    WowzaHostSecurityGroup:
+        Description: A reference to the security group for Wowza hosts
+        Value: !GetAtt [ "WowzaHostSecurityGroup", "GroupId" ]
