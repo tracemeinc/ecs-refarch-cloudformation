@@ -1,2 +1,3 @@
 # Ignore VIM Swapfiles
-.*.swp
+*.swp
+*.swo
