@@ -8,5 +8,6 @@
     { "ParameterKey": "DatabaseAdminUsername", "ParameterValue": "devintdbroot" },
     { "ParameterKey": "DatabaseAdminPassword", "ParameterValue": "7E_5u6heQaPum8R+sWut" },
     { "ParameterKey": "DatabaseInstanceType", "ParameterValue": "db.t2.micro" },
-    { "ParameterKey": "DatabaseStorageSizeGigabytes", "ParameterValue": "30" }
+    { "ParameterKey": "DatabaseStorageSizeGigabytes", "ParameterValue": "30" },
+    { "ParameterKey": "Stage", "ParameterValue": "devint" }
 ]

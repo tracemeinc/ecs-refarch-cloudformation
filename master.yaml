@@ -89,6 +89,12 @@ Parameters:
         Description: How many website tasks should be deployed across the ECS cluster?
         Type: Number
 
+    Stage:
+        Type: String
+        AllowedValues:
+            - devint
+            - prod
+
 Metadata:
     AWS::CloudFormation::Interface:
         ParameterGroups:
@@ -125,6 +131,8 @@ Metadata:
                 default: Number of nodes running Website Service
             ProductServiceCount:
                 default: Number of nodes running Product Service
+            Stage:
+                default: The Development Stage
 Resources:
 
     VPC:
@@ -133,6 +141,7 @@ Resources:
             TemplateURL: !Sub 'https://s3.amazonaws.com/codepipeline.traceme.com/${AWS::StackName}/infrastructure/stacks/vpc.yaml'
             Parameters:
                 EnvironmentName:    !Ref AWS::StackName
+                Stage:              !Ref Stage
                 VpcCIDR:            !Sub '10.${VpcClassB}.0.0/16'
                 PublicSubnet1CIDR:  !Sub '10.${VpcClassB}.8.0/21'
                 PublicSubnet2CIDR:  !Sub '10.${VpcClassB}.16.0/21'
