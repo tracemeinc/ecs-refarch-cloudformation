@@ -1,4 +1,5 @@
 [
     { "ParameterKey": "SshKey", "ParameterValue": "production" },
-    { "ParameterKey": "VpcClassB", "ParameterValue": "4" }
+    { "ParameterKey": "VpcClassB", "ParameterValue": "4" },
+    { "ParameterKey": "Stage", "ParameterValue": "devint" }
 ]
