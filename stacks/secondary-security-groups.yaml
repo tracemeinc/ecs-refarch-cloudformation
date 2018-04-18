@@ -71,7 +71,7 @@ Resources:
                 FromPort: 443
                 ToPort: 443
                 CidrIp: 0.0.0.0/0
-                Description: HTTP secure streaming port, Accessed from cloudfront
+                Description: HTTP secure streaming port, Accessed from cloudfront, ping
 
               #- IpProtocol: tcp
               #  FromPort: 8087
