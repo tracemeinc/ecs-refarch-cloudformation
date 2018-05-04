@@ -30,6 +30,12 @@ Parameters:
         Default: 209.119.204.118/32
         AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
 
+    OfficeCidr2:
+        Type: String
+        Description: CIDR of office. Used for various access.
+        Default: 67.135.46.18/32
+        AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+
     VpnCidr:
         Type: String
         Description: CIDR of VPN. Used for various access.
@@ -55,6 +61,8 @@ Metadata:
                 default: SSH KeyPair KeyName
             OfficeCidr:
                 default: CIDR range of office
+            OfficeCidr2:
+                default: CIDR range of office Second Ip
             VpnCidr:
                 default: CIDR range of vpn
             Stage:
@@ -83,4 +91,5 @@ Resources:
                 Stage:           !Ref Stage
                 VPC: !GetAtt VPC.Outputs.VPC
                 OfficeCidr: !Ref OfficeCidr
+                OfficeCidr2: !Ref OfficeCidr2
                 VpnCidr: !Ref VpnCidr

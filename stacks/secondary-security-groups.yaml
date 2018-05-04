@@ -19,6 +19,11 @@ Parameters:
         Description: CIDR of office. Used for various access.
         AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
 
+    OfficeCidr2:
+        Type: String
+        Description: CIDR of 2nd office ip. Used for various access.
+        AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+
     VpnCidr:
         Type: String
         Description: CIDR of VPN. Used for various access.
@@ -48,12 +53,17 @@ Resources:
               #  CidrIp: 0.0.0.0/0
               #  Description: Wowza Server Statistics
 
-              # we can probably lock this down to our VPN
               - IpProtocol: tcp
                 FromPort: 8090
                 ToPort: 8090
                 CidrIp: !Ref OfficeCidr
                 Description: Wowza web UI (SSL) from Office
+
+              - IpProtocol: tcp
+                FromPort: 8090
+                ToPort: 8090
+                CidrIp: !Ref OfficeCidr2
+                Description: Wowza web UI (SSL) from Office IP 2
 
               - IpProtocol: tcp
                 FromPort: 8090
@@ -101,7 +111,13 @@ Resources:
                 FromPort: 22
                 ToPort: 22
                 CidrIp: !Ref OfficeCidr
-                Description: SSH access to host
+                Description: SSH access to host from Office IP
+
+              - IpProtocol: tcp
+                FromPort: 22
+                ToPort: 22
+                CidrIp: !Ref OfficeCidr2
+                Description: SSH access to host From Office IP 2
 
               - IpProtocol: tcp
                 FromPort: 22
